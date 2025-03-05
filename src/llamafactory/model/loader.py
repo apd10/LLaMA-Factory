@@ -35,7 +35,7 @@ from .model_utils.mod import convert_pretrained_model_to_mod, load_mod_pretraine
 from .model_utils.unsloth import load_unsloth_pretrained_model
 from .model_utils.valuehead import load_valuehead_params
 from .patcher import patch_config, patch_model, patch_processor, patch_tokenizer, patch_valuehead_model
-
+from composable_ai.extension_layers import convert_llama
 
 if TYPE_CHECKING:
     from transformers import PretrainedConfig, PreTrainedModel, PreTrainedTokenizer, ProcessorMixin
@@ -191,6 +191,23 @@ def load_model(
         model.eval()
     else:
         model.train()
+ 
+
+    if model_args.apply_dext:
+        model.requires_grad_(False)
+        for param in model.parameters():
+            if param.data.dtype == torch.float32 and model_args.compute_dtype != torch.float32:
+                param.data = param.data.to(model_args.compute_dtype)
+        config.ext_total_hidden_size = model_args.ext_total_hidden_size
+        config.ext_total_num_activated_experts = model_args.ext_total_num_activated_experts
+        config.ext_total_num_experts = model_args.ext_total_num_experts
+        config.ext_num_experts = model_args.ext_num_experts
+        config.ext_division_mode = model_args.ext_division_mode
+        config.ext_activation = model_args.ext_activation
+        model = convert_llama(model, config)
+
+
+
 
     trainable_params, all_param = count_parameters(model)
     if is_trainable:
@@ -205,5 +222,5 @@ def load_model(
     if model_args.print_param_status and int(os.getenv("LOCAL_RANK", "0")) == 0:
         for name, param in model.named_parameters():
             print(f"name: {name}, dtype: {param.dtype}, device: {param.device}, trainable: {param.requires_grad}")
-
+    print(model)
     return model

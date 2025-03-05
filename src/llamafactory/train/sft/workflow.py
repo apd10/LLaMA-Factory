@@ -131,3 +131,6 @@ def run_sft(
 
     # Create model card
     create_modelcard_and_push(trainer, model_args, data_args, training_args, finetuning_args)
+    if model_args.apply_dext:
+        from composable_ai.extension_layers import save_adapter_model
+        save_adapter_model(model, training_args.output_dir)

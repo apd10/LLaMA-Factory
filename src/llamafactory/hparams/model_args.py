@@ -22,7 +22,7 @@ from typing import Any, Dict, Literal, Optional, Union
 import torch
 from transformers.training_args import _convert_str_dict
 from typing_extensions import Self
-
+from composable_ai.extension_layers import DextArguments
 
 @dataclass
 class QuantizationArguments:
@@ -157,7 +157,7 @@ class VllmArguments:
 
 
 @dataclass
-class ModelArguments(QuantizationArguments, ProcessorArguments, ExportArguments, VllmArguments):
+class ModelArguments(QuantizationArguments, ProcessorArguments, ExportArguments, VllmArguments, DextArguments):
     r"""
     Arguments pertaining to which model/config/tokenizer we are going to fine-tune or infer.
     """
@@ -317,6 +317,7 @@ class ModelArguments(QuantizationArguments, ProcessorArguments, ExportArguments,
         init=False,
         metadata={"help": "Whether use block diag attention or not, derived from `neat_packing`. Do not specify it."},
     )
+
 
     def __post_init__(self):
         if self.model_name_or_path is None:

@@ -1,4 +1,23 @@
 {
+  "openmathinstruct2": {
+    "hf_hub_url": "nvidia/OpenMathInstruct-2",
+    "columns": {
+      "prompt": "problem",
+      "response": "generated_solution"
+    }
+  },
+  "abstract_algebra": {
+    "file_name" : "mmlu_abstract_algebra.txt",
+    "columns" : {
+      "prompt" : "text"
+    }
+  },
+  "european_history": {
+    "file_name" : "european_history_blob.txt",
+    "columns" : {
+      "prompt" : "text"
+    }
+  },
   "identity": {
     "file_name": "identity.json"
   },
