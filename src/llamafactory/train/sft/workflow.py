@@ -26,7 +26,7 @@ from ...model import load_model, load_tokenizer
 from ..trainer_utils import create_modelcard_and_push
 from .metric import ComputeAccuracy, ComputeSimilarity, eval_logit_processor
 from .trainer import CustomSeq2SeqTrainer
-
+from composable_ai.extension_layers import DextSaveCallback
 
 if TYPE_CHECKING:
     from transformers import Seq2SeqTrainingArguments, TrainerCallback
@@ -96,7 +96,8 @@ def run_sft(
         **tokenizer_module,
         **metric_module,
     )
-
+    if model_args.apply_dext:
+        trainer.add_callback(DextSaveCallback())
     # Training
     if training_args.do_train:
         train_result = trainer.train(resume_from_checkpoint=training_args.resume_from_checkpoint)
@@ -131,6 +132,4 @@ def run_sft(
 
     # Create model card
     create_modelcard_and_push(trainer, model_args, data_args, training_args, finetuning_args)
-    if model_args.apply_dext:
-        from composable_ai.extension_layers import save_adapter_model
-        save_adapter_model(model, training_args.output_dir)
+
