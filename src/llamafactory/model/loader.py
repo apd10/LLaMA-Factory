@@ -198,13 +198,8 @@ def load_model(
         for param in model.parameters():
             if param.data.dtype == torch.float32 and model_args.compute_dtype != torch.float32:
                 param.data = param.data.to(model_args.compute_dtype)
-        config.ext_total_hidden_size = model_args.ext_total_hidden_size
-        config.ext_total_num_activated_experts = model_args.ext_total_num_activated_experts
-        config.ext_total_num_experts = model_args.ext_total_num_experts
-        config.ext_num_experts = model_args.ext_num_experts
-        config.ext_division_mode = model_args.ext_division_mode
-        config.ext_activation = model_args.ext_activation
-        model = convert_llama(model, config)
+        
+        model = convert_llama(model, model_args)
 
 
 
