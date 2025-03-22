@@ -1,6 +1,7 @@
 {
   "openmathinstruct2": {
     "hf_hub_url": "nvidia/OpenMathInstruct-2",
+    "split" : "train_1M",
     "columns": {
       "prompt": "problem",
       "response": "generated_solution"
